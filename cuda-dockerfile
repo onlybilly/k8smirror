@@ -1,1 +1,35 @@
 FROM nvidia/cuda:12.2.2-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装依赖和 Python
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential \
+    python3.10 \
+    python3.10-venv \
+    python3.10-dev \
+    python3-pip \
+    && ln -sf /usr/bin/python3.10 /usr/bin/python3 \
+    && ln -sf /usr/bin/pip3 /usr/bin/pip \
+    && pip install --upgrade pip
+
+# 安装 Rust（uv 的依赖），并确保路径正确
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y && \
+    . "$HOME/.cargo/env" && \
+    cargo install uv && \
+    cp ~/.cargo/bin/uv /usr/local/bin/uv
+
+# 检查uv安装路径
+RUN ls -l /root/.cargo/bin && which uv && uv --version
+
+# 使用 uv 安装 vllm
+RUN uv pip install --pre vllm==0.10.1+gptoss \
+    --extra-index-url https://wheels.vllm.ai/gpt-oss/ \
+    --extra-index-url https://download.pytorch.org/whl/nightly/cu128 \
+    --index-strategy unsafe-best-match
+
+WORKDIR /app
+
+CMD ["bash"]
