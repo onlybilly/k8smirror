@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.2-runtime-ubuntu22.04
+FROM crpi-s469om8gzf5dtmgx.cn-hangzhou.personal.cr.aliyuncs.com/gengziqiang/cuda:12.2.2-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
