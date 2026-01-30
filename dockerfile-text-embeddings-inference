@@ -1,0 +1,1 @@
+FROM infiniflow/text-embeddings-inference:cpu-1.8
